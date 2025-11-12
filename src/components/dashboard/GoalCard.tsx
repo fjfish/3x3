@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { useFormState } from "react-dom";
+import { useActionState, useState } from "react";
 import clsx from "clsx";
 
 import { MarkdownToggle } from "@/components/markdown/MarkdownToggle";
@@ -31,7 +30,7 @@ const initialState: GoalActionState = {};
 export function GoalCard({ goal, parentOptions }: GoalCardProps) {
   const [isEditing, setIsEditing] = useState(false);
   const updateAction = updateGoalAction.bind(null, goal.id);
-  const [state, formAction] = useFormState(updateAction, initialState);
+  const [state, formAction] = useActionState(updateAction, initialState);
 
   return (
     <article className="space-y-4 rounded-3xl border border-neutral-800 bg-neutral-900/60 p-6">

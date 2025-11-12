@@ -1,7 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { useFormState } from "react-dom";
+import { useActionState, useEffect, useRef } from "react";
 
 import {
   createGoalAction,
@@ -25,7 +24,7 @@ export function CreateGoalForm({
   tier,
   parentOptions = [],
 }: CreateGoalFormProps) {
-  const [state, formAction] = useFormState(createGoalAction, initialState);
+  const [state, formAction] = useActionState(createGoalAction, initialState);
   const formRef = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
