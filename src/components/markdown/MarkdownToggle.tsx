@@ -51,12 +51,11 @@ export function MarkdownToggle({ content }: MarkdownToggleProps) {
 
       <div className="max-h-64 overflow-y-auto rounded-2xl border border-neutral-800 bg-neutral-900/50 px-4 py-3 text-sm leading-relaxed text-neutral-200">
         {mode === "preview" ? (
-          <ReactMarkdown
-            className="space-y-3 leading-relaxed [&_a]:text-white [&_code]:rounded [&_code]:bg-neutral-800 [&_code]:px-1 [&_strong]:text-white"
-            remarkPlugins={[remarkGfm]}
-          >
-            {content}
-          </ReactMarkdown>
+          <div className="space-y-3 leading-relaxed [&_a]:text-white [&_code]:rounded [&_code]:bg-neutral-800 [&_code]:px-1 [&_strong]:text-white">
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              {content}
+            </ReactMarkdown>
+          </div>
         ) : (
           <pre className="whitespace-pre-wrap break-words font-mono text-xs text-neutral-300">
             {content}
