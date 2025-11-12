@@ -43,7 +43,7 @@ const tierMeta = [
 ];
 
 export default async function DashboardPage() {
-  const { userId } = auth();
+  const { userId } = await auth();
 
   if (!userId) {
     redirect("/");
@@ -57,10 +57,10 @@ export default async function DashboardPage() {
     const parentOptions: ParentOption[] =
       parentTier >= 1
         ? (grouped.find((group) => group.tier === parentTier)?.goals ?? []).map((goal) => ({
-            id: goal.id,
-            title: goal.title,
-            tier: goal.tier,
-          }))
+          id: goal.id,
+          title: goal.title,
+          tier: goal.tier,
+        }))
         : [];
 
     const goals = goalsInTier.map((goal) => ({
