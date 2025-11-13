@@ -71,6 +71,7 @@ export default async function DashboardPage() {
       isPrimary: goal.isPrimary,
       parentGoalId: goal.parentGoalId,
       parentTitle: goal.parent?.title ?? null,
+      completedAt: goal.completedAt,
     }));
 
     return {

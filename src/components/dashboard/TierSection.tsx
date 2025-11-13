@@ -12,6 +12,7 @@ export type DashboardGoal = {
   isPrimary: boolean;
   parentGoalId: string | null;
   parentTitle?: string | null;
+  completedAt: Date | null;
 };
 
 type TierSectionProps = {

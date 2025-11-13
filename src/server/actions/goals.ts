@@ -321,3 +321,38 @@ export async function deleteGoalAction(formData: FormData) {
   revalidatePath("/dashboard");
 }
 
+export async function toggleCompleteGoalAction(formData: FormData) {
+  const { userId } = await auth();
+
+  if (!userId) {
+    throw new Error("You must be signed in to complete goals.");
+  }
+
+  const goalId = formData.get("goalId");
+
+  if (!goalId || typeof goalId !== "string") {
+    throw new Error("Goal id is required.");
+  }
+
+  const [existingGoal] = await db
+    .select({
+      completedAt: goals.completedAt,
+    })
+    .from(goals)
+    .where(and(eq(goals.id, goalId), eq(goals.userId, userId)));
+
+  if (!existingGoal) {
+    throw new Error("Goal not found.");
+  }
+
+  await db
+    .update(goals)
+    .set({
+      completedAt: existingGoal.completedAt ? null : new Date(),
+      updatedAt: new Date(),
+    })
+    .where(and(eq(goals.id, goalId), eq(goals.userId, userId)));
+
+  revalidatePath("/dashboard");
+}
+

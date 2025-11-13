@@ -6,6 +6,7 @@ import clsx from "clsx";
 import { MarkdownToggle } from "@/components/markdown/MarkdownToggle";
 import {
   deleteGoalAction,
+  toggleCompleteGoalAction,
   updateGoalAction,
   type GoalActionState,
 } from "@/server/actions/goals";
@@ -21,6 +22,7 @@ type GoalCardProps = {
     isPrimary: boolean;
     parentGoalId: string | null;
     parentTitle?: string | null;
+    completedAt: Date | null;
   };
   parentOptions: ParentOption[];
 };
@@ -32,17 +34,27 @@ export function GoalCard({ goal, parentOptions }: GoalCardProps) {
   const updateAction = updateGoalAction.bind(null, goal.id);
   const [state, formAction] = useActionState(updateAction, initialState);
 
+  const isCompleted = goal.completedAt !== null;
+
   return (
     <article
       className={clsx(
         "space-y-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-all duration-200 hover:shadow-md",
         "border-l-4",
         goal.isPrimary ? "border-l-emerald-500" : "border-l-blue-200",
+        isCompleted && "opacity-60",
       )}
     >
       <header className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div className="space-y-2">
-          <h3 className="text-lg font-semibold text-slate-900">{goal.title}</h3>
+          <h3
+            className={clsx(
+              "text-lg font-semibold text-slate-900",
+              isCompleted && "line-through",
+            )}
+          >
+            {goal.title}
+          </h3>
           <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
             <span
               className={clsx(
@@ -62,6 +74,20 @@ export function GoalCard({ goal, parentOptions }: GoalCardProps) {
           </div>
         </div>
         <div className="flex items-center gap-2">
+          <form action={toggleCompleteGoalAction}>
+            <input type="hidden" name="goalId" value={goal.id} />
+            <button
+              type="submit"
+              className={clsx(
+                "rounded-full px-4 py-1 text-sm font-semibold transition",
+                isCompleted
+                  ? "border border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
+                  : "border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100",
+              )}
+            >
+              {isCompleted ? "Completed" : "Complete"}
+            </button>
+          </form>
           <button
             type="button"
             onClick={() => setIsEditing((prev) => !prev)}
