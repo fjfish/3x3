@@ -1,9 +1,7 @@
 import clsx from "clsx";
 
-import {
-  CreateGoalForm,
-  type ParentOption,
-} from "@/components/dashboard/CreateGoalForm";
+import type { ParentOption } from "@/components/dashboard/CreateGoalForm";
+import { CollapsibleGoalForm } from "@/components/dashboard/CollapsibleGoalForm";
 import { GoalCard } from "@/components/dashboard/GoalCard";
 
 export type DashboardGoal = {
@@ -111,7 +109,7 @@ export function TierSection({ meta, goals, parentOptions }: TierSectionProps) {
         </div>
       ) : null}
 
-      <CreateGoalForm tier={meta.tier} parentOptions={parentOptions} />
+      <CollapsibleGoalForm tier={meta.tier} parentOptions={parentOptions} />
     </section>
   );
 }
