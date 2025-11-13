@@ -75,8 +75,6 @@ export function TierSection({ meta, goals, parentOptions }: TierSectionProps) {
         <p className="text-sm text-slate-600">{meta.description}</p>
       </header>
 
-      <CreateGoalForm tier={meta.tier} parentOptions={parentOptions} />
-
       <div className="space-y-4">
         <h3 className="text-xs font-semibold uppercase tracking-[0.35em] text-slate-500">
           Primary ({primaryGoals.length}/3)
@@ -112,6 +110,8 @@ export function TierSection({ meta, goals, parentOptions }: TierSectionProps) {
           )}
         </div>
       ) : null}
+
+      <CreateGoalForm tier={meta.tier} parentOptions={parentOptions} />
     </section>
   );
 }
