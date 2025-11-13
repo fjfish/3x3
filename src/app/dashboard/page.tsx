@@ -94,13 +94,6 @@ export default async function DashboardPage() {
             Keep a tight feedback loop from yearly ambitions to daily focus. Use the tiers below to update goals, add contextual notes in Markdown, and reference how each effort connects to the bigger picture.
           </p>
         </div>
-        <UserButton
-          appearance={{
-            elements: {
-              userButtonAvatarBox: "h-12 w-12",
-            },
-          }}
-        />
       </section>
 
       <div className="mt-10 space-y-8 pb-12">
