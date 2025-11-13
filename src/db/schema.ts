@@ -22,7 +22,7 @@ export const goals = pgTable("goals", {
   tier: integer("tier").notNull(),
   title: varchar("title", { length: 256 }).notNull(),
   notes: text("notes"),
-  parentGoalId: uuid("parent_goal_id").references(() => goals.id, {
+  parentGoalId: uuid("parent_goal_id").references((): any => goals.id, {
     onDelete: "set null",
   }),
   isPrimary: boolean("is_primary").default(true).notNull(),
