@@ -33,23 +33,29 @@ export function GoalCard({ goal, parentOptions }: GoalCardProps) {
   const [state, formAction] = useActionState(updateAction, initialState);
 
   return (
-    <article className="space-y-4 rounded-3xl border border-neutral-800 bg-neutral-900/60 p-6">
+    <article
+      className={clsx(
+        "space-y-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-all duration-200 hover:shadow-md",
+        "border-l-4",
+        goal.isPrimary ? "border-l-emerald-500" : "border-l-blue-200",
+      )}
+    >
       <header className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-        <div className="space-y-1">
-          <h3 className="text-lg font-semibold text-white">{goal.title}</h3>
-          <div className="flex flex-wrap items-center gap-2 text-xs text-neutral-400">
+        <div className="space-y-2">
+          <h3 className="text-lg font-semibold text-slate-900">{goal.title}</h3>
+          <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
             <span
               className={clsx(
-                "rounded-full px-3 py-1 font-medium",
+                "rounded-full px-3 py-1 font-semibold",
                 goal.isPrimary
-                  ? "bg-emerald-500/20 text-emerald-200"
-                  : "bg-neutral-800 text-neutral-300",
+                  ? "bg-emerald-50 text-emerald-700"
+                  : "bg-blue-50 text-blue-600",
               )}
             >
               {goal.isPrimary ? "Primary" : "Extra"}
             </span>
             {goal.parentTitle ? (
-              <span className="rounded-full bg-neutral-800 px-3 py-1 font-medium text-neutral-300">
+              <span className="rounded-full bg-slate-100 px-3 py-1 font-medium text-slate-600">
                 Linked to: {goal.parentTitle}
               </span>
             ) : null}
@@ -59,7 +65,7 @@ export function GoalCard({ goal, parentOptions }: GoalCardProps) {
           <button
             type="button"
             onClick={() => setIsEditing((prev) => !prev)}
-            className="rounded-full border border-neutral-700 px-4 py-1 text-sm font-medium text-white transition hover:border-white"
+            className="rounded-full border border-blue-200 bg-blue-50 px-4 py-1 text-sm font-semibold text-blue-700 transition hover:bg-blue-100"
           >
             {isEditing ? "Close" : "Edit"}
           </button>
@@ -74,7 +80,7 @@ export function GoalCard({ goal, parentOptions }: GoalCardProps) {
             <input type="hidden" name="goalId" value={goal.id} />
             <button
               type="submit"
-              className="rounded-full border border-transparent px-4 py-1 text-sm font-medium text-rose-300 transition hover:border-rose-500 hover:text-rose-200"
+              className="rounded-full border border-rose-100 bg-rose-50 px-4 py-1 text-sm font-semibold text-rose-600 transition hover:border-rose-200 hover:bg-rose-100"
             >
               Delete
             </button>
@@ -85,27 +91,30 @@ export function GoalCard({ goal, parentOptions }: GoalCardProps) {
       <MarkdownToggle content={goal.notes} />
 
       {isEditing ? (
-        <form action={formAction} className="space-y-4 rounded-2xl border border-neutral-800 bg-neutral-950/40 p-4">
+        <form
+          action={formAction}
+          className="space-y-4 rounded-2xl border border-slate-200 bg-slate-50/70 p-4"
+        >
           <input type="hidden" name="tier" value={goal.tier} />
           <div className="space-y-2">
-            <label className="text-sm font-medium text-neutral-200">
+            <label className="text-sm font-medium text-slate-700">
               Goal title
             </label>
             <input
               name="title"
               defaultValue={goal.title}
               required
-              className="w-full rounded-2xl border border-neutral-800 bg-neutral-900 px-4 py-2 text-sm text-white outline-none transition focus:border-white focus:ring-2 focus:ring-white/20"
+              className="w-full rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm text-slate-900 outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
             />
           </div>
 
           {goal.tier >= 4 ? (
-            <label className="flex items-center gap-2 text-sm text-neutral-300">
+            <label className="flex items-center gap-2 text-sm text-slate-600">
               <input
                 type="checkbox"
                 name="isPrimary"
                 defaultChecked={goal.isPrimary}
-                className="h-4 w-4 rounded border-neutral-700 bg-neutral-900 text-neutral-900 focus:ring-white/40"
+                className="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-200"
               />
               Treat as one of the three primary items
             </label>
@@ -113,13 +122,13 @@ export function GoalCard({ goal, parentOptions }: GoalCardProps) {
 
           {goal.tier > 1 && parentOptions.length ? (
             <div className="space-y-2">
-              <label className="text-sm font-medium text-neutral-200">
+              <label className="text-sm font-medium text-slate-700">
                 Parent goal
               </label>
               <select
                 name="parentGoalId"
                 defaultValue={goal.parentGoalId ?? ""}
-                className="w-full rounded-2xl border border-neutral-800 bg-neutral-900 px-4 py-2 text-sm text-white outline-none transition focus:border-white focus:ring-2 focus:ring-white/20"
+                className="w-full rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm text-slate-900 outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
               >
                 <option value="">No parent selected</option>
                 {parentOptions.map((option) => (
@@ -132,34 +141,34 @@ export function GoalCard({ goal, parentOptions }: GoalCardProps) {
           ) : null}
 
           <div className="space-y-2">
-            <label className="text-sm font-medium text-neutral-200">
+            <label className="text-sm font-medium text-slate-700">
               Notes (Markdown)
             </label>
             <textarea
               name="notes"
               rows={4}
               defaultValue={goal.notes ?? ""}
-              className="w-full rounded-2xl border border-neutral-800 bg-neutral-900 px-4 py-2 text-sm text-white outline-none transition focus:border-white focus:ring-2 focus:ring-white/20"
+              className="w-full rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm text-slate-900 outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
             />
           </div>
 
           <div className="min-h-[1.5rem]">
             {state.error ? (
-              <p className="text-sm text-rose-400">{state.error}</p>
+              <p className="text-sm text-rose-600">{state.error}</p>
             ) : null}
           </div>
 
-          <div className="flex gap-3">
+          <div className="flex flex-wrap gap-3">
             <button
               type="submit"
-              className="rounded-full bg-white px-4 py-2 text-sm font-semibold text-neutral-900 transition hover:bg-neutral-200"
+              className="rounded-full bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700"
             >
               Save changes
             </button>
             <button
               type="button"
               onClick={() => setIsEditing(false)}
-              className="rounded-full border border-neutral-700 px-4 py-2 text-sm font-medium text-white transition hover:border-white"
+              className="rounded-full border border-slate-300 px-4 py-2 text-sm font-medium text-slate-600 transition hover:border-slate-400 hover:text-slate-700"
             >
               Cancel
             </button>

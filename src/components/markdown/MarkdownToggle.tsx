@@ -14,7 +14,7 @@ export function MarkdownToggle({ content }: MarkdownToggleProps) {
 
   if (!content) {
     return (
-      <p className="rounded-md border border-dashed border-neutral-700 bg-neutral-900/40 px-3 py-2 text-sm text-neutral-500">
+      <p className="rounded-lg border border-dashed border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-500">
         No notes yet.
       </p>
     );
@@ -22,15 +22,15 @@ export function MarkdownToggle({ content }: MarkdownToggleProps) {
 
   return (
     <div className="space-y-3">
-      <div className="inline-flex rounded-full border border-neutral-700 bg-neutral-900/40 p-1">
+      <div className="inline-flex rounded-full border border-slate-200 bg-white p-1 shadow-sm">
         <button
           type="button"
           onClick={() => setMode("preview")}
           className={clsx(
-            "rounded-full px-4 py-1 text-xs font-medium transition",
+            "rounded-full px-4 py-1 text-xs font-semibold transition",
             mode === "preview"
-              ? "bg-white text-neutral-900"
-              : "text-neutral-300 hover:text-white",
+              ? "bg-blue-600 text-white shadow-sm"
+              : "text-slate-500 hover:text-slate-700",
           )}
         >
           HTML view
@@ -39,25 +39,25 @@ export function MarkdownToggle({ content }: MarkdownToggleProps) {
           type="button"
           onClick={() => setMode("markdown")}
           className={clsx(
-            "rounded-full px-4 py-1 text-xs font-medium transition",
+            "rounded-full px-4 py-1 text-xs font-semibold transition",
             mode === "markdown"
-              ? "bg-white text-neutral-900"
-              : "text-neutral-300 hover:text-white",
+              ? "bg-blue-600 text-white shadow-sm"
+              : "text-slate-500 hover:text-slate-700",
           )}
         >
           Markdown
         </button>
       </div>
 
-      <div className="max-h-64 overflow-y-auto rounded-2xl border border-neutral-800 bg-neutral-900/50 px-4 py-3 text-sm leading-relaxed text-neutral-200">
+      <div className="max-h-64 overflow-y-auto rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm leading-relaxed text-slate-700 shadow-inner">
         {mode === "preview" ? (
-          <div className="space-y-3 leading-relaxed [&_a]:text-white [&_code]:rounded [&_code]:bg-neutral-800 [&_code]:px-1 [&_strong]:text-white">
+          <div className="prose prose-sm max-w-none space-y-3 leading-relaxed text-slate-700 [&_a]:text-blue-600 [&_code]:rounded [&_code]:bg-slate-100 [&_code]:px-1 [&_strong]:text-slate-900">
             <ReactMarkdown remarkPlugins={[remarkGfm]}>
               {content}
             </ReactMarkdown>
           </div>
         ) : (
-          <pre className="whitespace-pre-wrap break-words font-mono text-xs text-neutral-300">
+          <pre className="whitespace-pre-wrap break-words font-mono text-xs text-slate-500">
             {content}
           </pre>
         )}

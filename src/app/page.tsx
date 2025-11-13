@@ -29,52 +29,43 @@ export default function Home() {
   }
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-5xl flex-col items-center justify-center gap-16 px-6 py-24 text-center">
+    <main className="mx-auto flex min-h-[calc(100vh-6rem)] max-w-5xl flex-col items-center justify-center gap-16 px-6 py-24 text-center">
       <section className="space-y-6">
-        <p className="text-sm uppercase tracking-[0.35em] text-neutral-400">
+        <p className="text-sm font-semibold uppercase tracking-[0.35em] text-indigo-500">
           3 × 3 Goals
         </p>
-        <h1 className="text-4xl font-semibold text-white sm:text-6xl">
+        <h1 className="text-4xl font-semibold text-slate-900 sm:text-6xl">
           Align ambitions with daily execution
         </h1>
-        <p className="mx-auto max-w-2xl text-lg text-neutral-300">
+        <p className="mx-auto max-w-2xl text-lg text-slate-600">
           Build a resilient planning cadence with yearly, quarterly, monthly,
           weekly, and daily tiers. Capture notes in Markdown, toggle your view,
           and stay centred on what matters most.
         </p>
-        <div className="flex flex-col items-center justify-center gap-3 sm:flex-row">
-          <SignUpButton mode="modal">
-            <button className="rounded-full bg-white px-6 py-3 font-medium text-neutral-950 transition hover:bg-neutral-200">
-              Create your workspace
-            </button>
-          </SignUpButton>
-          <SignInButton mode="modal">
-            <button className="rounded-full border border-neutral-700 px-6 py-3 font-medium text-white transition hover:border-neutral-500">
-              Sign in
-            </button>
-          </SignInButton>
-        </div>
       </section>
 
       <section className="grid w-full gap-6 text-left sm:grid-cols-3">
         {highlights.map((highlight) => (
           <article
             key={highlight.title}
-            className="rounded-3xl border border-neutral-800 bg-neutral-900/40 p-6 shadow-lg shadow-black/20"
+            className="rounded-3xl border border-indigo-100 bg-white p-6 shadow-sm transition hover:shadow-md"
           >
-            <h2 className="text-xl font-semibold text-white">
+            <h2 className="text-xl font-semibold text-slate-900">
               {highlight.title}
             </h2>
-            <p className="mt-2 text-sm leading-relaxed text-neutral-300">
+            <p className="mt-2 text-sm leading-relaxed text-slate-600">
               {highlight.description}
             </p>
           </article>
         ))}
       </section>
 
-      <p className="text-sm text-neutral-500">
+      <p className="text-sm text-slate-500">
         Already onboard?{" "}
-        <Link href="/dashboard" className="text-white underline underline-offset-4">
+        <Link
+          href="/dashboard"
+          className="font-semibold text-blue-600 underline underline-offset-4"
+        >
           Go to your dashboard
         </Link>
       </p>
