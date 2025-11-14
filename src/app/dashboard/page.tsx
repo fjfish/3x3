@@ -85,10 +85,33 @@ export default async function DashboardPage() {
   return (
     <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       <section className="flex flex-col items-start justify-between gap-6 rounded-2xl border border-indigo-100 bg-white p-8 shadow-sm sm:flex-row sm:items-center">
-        <div className="space-y-3">
-          <p className="text-xs font-semibold uppercase tracking-[0.35em] text-indigo-500">
-            Dashboard
-          </p>
+        <div className="space-y-3 flex-1">
+          <div className="flex items-center gap-3">
+            <p className="text-xs font-semibold uppercase tracking-[0.35em] text-indigo-500">
+              Dashboard
+            </p>
+            <a
+              href="https://ko-fi.com/fjfish"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 rounded-full bg-[#FF5E5B] px-3 py-1 text-xs font-semibold text-white transition hover:bg-[#FF4A47] shadow-sm"
+            >
+              <svg
+                className="h-3.5 w-3.5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M5 11h14M5 11a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v3a2 2 0 01-2 2M5 11v6a2 2 0 002 2h10a2 2 0 002-2v-6m-9 4h10"
+                />
+              </svg>
+              Buy me a coffee
+            </a>
+          </div>
           <h1 className="text-3xl font-semibold text-slate-900 sm:text-4xl">
             Tiered planning at a glance
           </h1>
