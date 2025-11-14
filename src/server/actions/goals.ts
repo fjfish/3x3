@@ -7,7 +7,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 import { db, schema } from "@/db";
-import { and, eq, max, ne, sql } from "drizzle-orm";
+import { and, eq, isNull, max, ne, sql } from "drizzle-orm";
 
 
 const { goals, users } = schema;
@@ -93,6 +93,7 @@ async function countPrimaryGoals(
     eq(goals.userId, userId),
     eq(goals.tier, tier),
     eq(goals.isPrimary, true),
+    isNull(goals.completedAt),
   ];
 
   if (excludeGoalId) {
@@ -321,38 +322,59 @@ export async function deleteGoalAction(formData: FormData) {
   revalidatePath("/dashboard");
 }
 
-export async function toggleCompleteGoalAction(formData: FormData) {
+export async function toggleCompleteGoalAction(
+  prevState: GoalActionState,
+  formData: FormData,
+): Promise<GoalActionState> {
   const { userId } = await auth();
 
   if (!userId) {
-    throw new Error("You must be signed in to complete goals.");
+    return { error: "You must be signed in to complete goals." };
   }
 
   const goalId = formData.get("goalId");
 
   if (!goalId || typeof goalId !== "string") {
-    throw new Error("Goal id is required.");
+    return { error: "Goal id is required." };
   }
 
   const [existingGoal] = await db
     .select({
       completedAt: goals.completedAt,
+      tier: goals.tier,
+      isPrimary: goals.isPrimary,
     })
     .from(goals)
     .where(and(eq(goals.id, goalId), eq(goals.userId, userId)));
 
   if (!existingGoal) {
-    throw new Error("Goal not found.");
+    return { error: "Goal not found." };
+  }
+
+  const isCurrentlyCompleted = existingGoal.completedAt !== null;
+  const willBeCompleted = !isCurrentlyCompleted;
+
+  // If uncompleting a primary goal, check if there are already 3 active primary goals
+  if (!willBeCompleted && existingGoal.isPrimary) {
+    const primaryCount = await countPrimaryGoals(userId, existingGoal.tier);
+    if (primaryCount >= 3) {
+      return {
+        error:
+          "You already have 3 active primary goals in this tier. Mark another goal as extra or complete one before uncompleting this goal.",
+      };
+    }
   }
 
   await db
     .update(goals)
     .set({
-      completedAt: existingGoal.completedAt ? null : new Date(),
+      completedAt: willBeCompleted ? new Date() : null,
       updatedAt: new Date(),
     })
     .where(and(eq(goals.id, goalId), eq(goals.userId, userId)));
 
   revalidatePath("/dashboard");
+
+  return { success: true };
 }
 

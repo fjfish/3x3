@@ -32,7 +32,11 @@ const initialState: GoalActionState = {};
 export function GoalCard({ goal, parentOptions }: GoalCardProps) {
   const [isEditing, setIsEditing] = useState(false);
   const updateAction = updateGoalAction.bind(null, goal.id);
-  const [state, formAction] = useActionState(updateAction, initialState);
+  const [updateState, updateFormAction] = useActionState(updateAction, initialState);
+  const [completeState, completeFormAction] = useActionState(
+    toggleCompleteGoalAction,
+    initialState,
+  );
 
   const isCompleted = goal.completedAt !== null;
 
@@ -73,44 +77,51 @@ export function GoalCard({ goal, parentOptions }: GoalCardProps) {
             ) : null}
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <form action={toggleCompleteGoalAction}>
-            <input type="hidden" name="goalId" value={goal.id} />
+        <div className="flex flex-col items-end gap-2">
+          <div className="flex items-center gap-2">
+            <form action={completeFormAction}>
+              <input type="hidden" name="goalId" value={goal.id} />
+              <button
+                type="submit"
+                className={clsx(
+                  "rounded-full px-4 py-1 text-sm font-semibold transition",
+                  isCompleted
+                    ? "border border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
+                    : "border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100",
+                )}
+              >
+                {isCompleted ? "Completed" : "Complete"}
+              </button>
+            </form>
             <button
-              type="submit"
-              className={clsx(
-                "rounded-full px-4 py-1 text-sm font-semibold transition",
-                isCompleted
-                  ? "border border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
-                  : "border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100",
-              )}
+              type="button"
+              onClick={() => setIsEditing((prev) => !prev)}
+              className="rounded-full border border-blue-200 bg-blue-50 px-4 py-1 text-sm font-semibold text-blue-700 transition hover:bg-blue-100"
             >
-              {isCompleted ? "Completed" : "Complete"}
+              {isEditing ? "Close" : "Edit"}
             </button>
-          </form>
-          <button
-            type="button"
-            onClick={() => setIsEditing((prev) => !prev)}
-            className="rounded-full border border-blue-200 bg-blue-50 px-4 py-1 text-sm font-semibold text-blue-700 transition hover:bg-blue-100"
-          >
-            {isEditing ? "Close" : "Edit"}
-          </button>
-          <form
-            action={deleteGoalAction}
-            onSubmit={(event) => {
-              if (!window.confirm("Delete this goal? This can't be undone.")) {
-                event.preventDefault();
-              }
-            }}
-          >
-            <input type="hidden" name="goalId" value={goal.id} />
-            <button
-              type="submit"
-              className="rounded-full border border-rose-100 bg-rose-50 px-4 py-1 text-sm font-semibold text-rose-600 transition hover:border-rose-200 hover:bg-rose-100"
+            <form
+              action={deleteGoalAction}
+              onSubmit={(event) => {
+                if (!window.confirm("Delete this goal? This can't be undone.")) {
+                  event.preventDefault();
+                }
+              }}
             >
-              Delete
-            </button>
-          </form>
+              <input type="hidden" name="goalId" value={goal.id} />
+              <button
+                type="submit"
+                className="rounded-full border border-rose-100 bg-rose-50 px-4 py-1 text-sm font-semibold text-rose-600 transition hover:border-rose-200 hover:bg-rose-100"
+              >
+                Delete
+              </button>
+            </form>
+          </div>
+          {completeState.error && (
+            <p className="text-xs text-rose-600 text-right max-w-xs">
+              {completeState.error}
+            </p>
+          )}
         </div>
       </header>
 
@@ -118,7 +129,7 @@ export function GoalCard({ goal, parentOptions }: GoalCardProps) {
 
       {isEditing ? (
         <form
-          action={formAction}
+          action={updateFormAction}
           className="space-y-4 rounded-2xl border border-slate-200 bg-slate-50/70 p-4"
         >
           <input type="hidden" name="tier" value={goal.tier} />
@@ -179,8 +190,8 @@ export function GoalCard({ goal, parentOptions }: GoalCardProps) {
           </div>
 
           <div className="min-h-[1.5rem]">
-            {state.error ? (
-              <p className="text-sm text-rose-600">{state.error}</p>
+            {updateState.error ? (
+              <p className="text-sm text-rose-600">{updateState.error}</p>
             ) : null}
           </div>
 
