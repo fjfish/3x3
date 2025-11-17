@@ -180,7 +180,7 @@ export async function createGoalAction(
     isPrimary = true;
     parentGoalId = undefined;
   } else {
-    isPrimary = isPrimary ?? true;
+    isPrimary = isPrimary ?? false;
   }
 
   if (isPrimary) {
@@ -264,7 +264,7 @@ export async function updateGoalAction(
     isPrimary = true;
     parentGoalId = undefined;
   } else {
-    isPrimary = isPrimary ?? original.isPrimary ?? true;
+    isPrimary = isPrimary ?? false;
   }
 
   if (isPrimary) {
