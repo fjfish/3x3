@@ -1,11 +1,12 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import clsx from "clsx";
 
 import { MarkdownToggle } from "@/components/markdown/MarkdownToggle";
 import {
   deleteGoalAction,
+  moveGoalTierAction,
   toggleCompleteGoalAction,
   updateGoalAction,
   type GoalActionState,
@@ -32,14 +33,37 @@ const initialState: GoalActionState = {};
 
 export function GoalCard({ goal, parentOptions }: GoalCardProps) {
   const [isEditing, setIsEditing] = useState(false);
+  const [isActionMenuOpen, setIsActionMenuOpen] = useState(false);
+  const actionMenuRef = useRef<HTMLDivElement>(null);
   const updateAction = updateGoalAction.bind(null, goal.id);
   const [updateState, updateFormAction] = useActionState(updateAction, initialState);
   const [completeState, completeFormAction] = useActionState(
     toggleCompleteGoalAction,
     initialState,
   );
+  const [moveState, moveFormAction] = useActionState(moveGoalTierAction, initialState);
 
   const isCompleted = goal.completedAt !== null;
+  const canMoveUp = goal.tier > 2;
+  const canMoveDown = goal.tier < 5;
+  const hasMoveActions = canMoveUp || canMoveDown;
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (!actionMenuRef.current) return;
+      if (actionMenuRef.current.contains(event.target as Node)) {
+        return;
+      }
+      setIsActionMenuOpen(false);
+    }
+
+    if (isActionMenuOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isActionMenuOpen]);
 
   const formatDate = (date: Date) => {
     return new Intl.DateTimeFormat("en-US", {
@@ -110,8 +134,59 @@ export function GoalCard({ goal, parentOptions }: GoalCardProps) {
             )}
           </div>
         </div>
-        <div className="flex flex-col items-end gap-2">
-          <div className="flex items-center gap-2">
+        <div className="flex flex-col items-end gap-2 relative">
+          <div className="flex flex-wrap items-center gap-2 justify-end">
+            {hasMoveActions ? (
+              <div className="relative" ref={actionMenuRef}>
+                <button
+                  type="button"
+                  onClick={() => setIsActionMenuOpen((prev) => !prev)}
+                  className="rounded-full border border-slate-200 bg-white px-3 py-1 text-sm font-semibold text-slate-600 shadow-sm transition hover:bg-slate-50"
+                  aria-haspopup="menu"
+                  aria-expanded={isActionMenuOpen}
+                >
+                  ⋮
+                </button>
+                {isActionMenuOpen ? (
+                  <div className="absolute right-0 z-20 mt-2 w-44 rounded-2xl border border-slate-200 bg-white p-2 shadow-lg">
+                    <p className="px-3 pb-2 text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">
+                      Move
+                    </p>
+                    {canMoveUp ? (
+                      <form
+                        action={moveFormAction}
+                        onSubmit={() => setIsActionMenuOpen(false)}
+                        className="mb-1"
+                      >
+                        <input type="hidden" name="goalId" value={goal.id} />
+                        <input type="hidden" name="direction" value="up" />
+                        <button
+                          type="submit"
+                          className="flex w-full items-center rounded-xl px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+                        >
+                          Move up
+                        </button>
+                      </form>
+                    ) : null}
+                    {canMoveDown ? (
+                      <form
+                        action={moveFormAction}
+                        onSubmit={() => setIsActionMenuOpen(false)}
+                      >
+                        <input type="hidden" name="goalId" value={goal.id} />
+                        <input type="hidden" name="direction" value="down" />
+                        <button
+                          type="submit"
+                          className="flex w-full items-center rounded-xl px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+                        >
+                          Move down
+                        </button>
+                      </form>
+                    ) : null}
+                  </div>
+                ) : null}
+              </div>
+            ) : null}
             <form action={completeFormAction}>
               <input type="hidden" name="goalId" value={goal.id} />
               <button
@@ -154,6 +229,9 @@ export function GoalCard({ goal, parentOptions }: GoalCardProps) {
             <p className="text-xs text-rose-600 text-right max-w-xs">
               {completeState.error}
             </p>
+          )}
+          {moveState.error && (
+            <p className="text-xs text-rose-600 text-right max-w-xs">{moveState.error}</p>
           )}
         </div>
       </header>

@@ -75,6 +75,11 @@ const updateGoalSchema = goalSchema.extend({
   goalId: z.string().uuid(),
 });
 
+const moveGoalSchema = z.object({
+  goalId: z.string().uuid(),
+  direction: z.enum(["up", "down"]),
+});
+
 async function ensureUser(userId: string) {
   await db
     .insert(users)
@@ -369,6 +374,98 @@ export async function toggleCompleteGoalAction(
     .update(goals)
     .set({
       completedAt: willBeCompleted ? new Date() : null,
+      updatedAt: new Date(),
+    })
+    .where(and(eq(goals.id, goalId), eq(goals.userId, userId)));
+
+  revalidatePath("/dashboard");
+
+  return { success: true };
+}
+
+export async function moveGoalTierAction(
+  prevState: GoalActionState,
+  formData: FormData,
+): Promise<GoalActionState> {
+  const { userId } = await auth();
+
+  if (!userId) {
+    return { error: "You must be signed in to move goals between tiers." };
+  }
+
+  const parsed = moveGoalSchema.safeParse({
+    goalId: formData.get("goalId"),
+    direction: formData.get("direction"),
+  });
+
+  if (!parsed.success) {
+    const [firstError] = parsed.error.issues;
+    return { error: firstError?.message ?? "Unable to move goal between tiers." };
+  }
+
+  const { goalId, direction } = parsed.data;
+
+  const [goalRecord] = await db
+    .select({
+      tier: goals.tier,
+      isPrimary: goals.isPrimary,
+      parentGoalId: goals.parentGoalId,
+    })
+    .from(goals)
+    .where(and(eq(goals.id, goalId), eq(goals.userId, userId)));
+
+  if (!goalRecord) {
+    return { error: "Goal not found." };
+  }
+
+  const isMovingUp = direction === "up";
+  const isMovingDown = direction === "down";
+
+  if (isMovingUp && goalRecord.tier <= 2) {
+    return { error: "Tier 1 and Tier 2 goals can only move down to lower-focus tiers." };
+  }
+
+  const tierDelta = isMovingUp ? -1 : 1;
+  const newTier = goalRecord.tier + tierDelta;
+
+  if (newTier < 1 || newTier > 5) {
+    return { error: "Goals can only live between tiers 1 and 5." };
+  }
+
+  let newIsPrimary = goalRecord.isPrimary;
+  let newParentGoalId: string | null = goalRecord.parentGoalId;
+
+  if (newTier <= 3) {
+    newIsPrimary = true;
+    newParentGoalId = null;
+  } else {
+    newIsPrimary = !!goalRecord.isPrimary;
+    newParentGoalId = null;
+  }
+
+  if (newIsPrimary) {
+    const primaryCount = await countPrimaryGoals(userId, newTier, goalId);
+    if (primaryCount >= 3) {
+      if (isMovingDown && newTier >= 4) {
+        newIsPrimary = false;
+      } else {
+        return {
+          error:
+            "You already have 3 primary items in the destination tier. Mark another goal as extra or complete one before moving this goal.",
+        };
+      }
+    }
+  }
+
+  const nextOrder = await getNextOrder(userId, newTier, newIsPrimary);
+
+  await db
+    .update(goals)
+    .set({
+      tier: newTier,
+      isPrimary: newIsPrimary,
+      parentGoalId: newParentGoalId,
+      order: nextOrder,
       updatedAt: new Date(),
     })
     .where(and(eq(goals.id, goalId), eq(goals.userId, userId)));
