@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect, useRef } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 
 import {
   createGoalAction,
@@ -26,10 +26,21 @@ export function CreateGoalForm({
 }: CreateGoalFormProps) {
   const [state, formAction] = useActionState(createGoalAction, initialState);
   const formRef = useRef<HTMLFormElement>(null);
+  
+  // Controlled form state to preserve values on error
+  const [title, setTitle] = useState("");
+  const [notes, setNotes] = useState("");
+  const [isPrimary, setIsPrimary] = useState(true);
+  const [parentGoalId, setParentGoalId] = useState("");
 
   useEffect(() => {
     if (state.success && formRef.current) {
       formRef.current.reset();
+      // Reset form state on success
+      setTitle("");
+      setNotes("");
+      setIsPrimary(true);
+      setParentGoalId("");
     }
   }, [state.success]);
 
@@ -46,6 +57,8 @@ export function CreateGoalForm({
         </label>
         <input
           name="title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
           required
           placeholder="Name the outcome you want to achieve"
           className="w-full rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm text-slate-900 outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
@@ -57,7 +70,8 @@ export function CreateGoalForm({
           <input
             type="checkbox"
             name="isPrimary"
-            defaultChecked
+            checked={isPrimary}
+            onChange={(e) => setIsPrimary(e.target.checked)}
             className="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-200"
           />
           Treat as one of the three primary items
@@ -71,7 +85,8 @@ export function CreateGoalForm({
           </label>
           <select
             name="parentGoalId"
-            defaultValue=""
+            value={parentGoalId}
+            onChange={(e) => setParentGoalId(e.target.value)}
             className="w-full rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm text-slate-900 outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
           >
             <option value="">No parent selected</option>
@@ -88,6 +103,8 @@ export function CreateGoalForm({
         <label className="text-sm font-medium text-slate-700">Notes</label>
         <textarea
           name="notes"
+          value={notes}
+          onChange={(e) => setNotes(e.target.value)}
           rows={4}
           placeholder="Use Markdown to add context, links, or checklists."
           className="w-full rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm text-slate-900 outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
