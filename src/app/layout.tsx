@@ -54,6 +54,15 @@ export default function RootLayout({
                   </div>
                 </div>
 
+                <div className="flex justify-center">
+                  <Link
+                    href="/docs"
+                    className="text-sm font-medium text-indigo-600 hover:text-indigo-700 transition"
+                  >
+                    Watch the explainer video
+                  </Link>
+                </div>
+
                 <div className="flex items-center gap-3">
                   <SignedOut>
                     <div className="flex items-center gap-3">
