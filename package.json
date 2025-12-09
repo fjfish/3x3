@@ -7,8 +7,8 @@
     "node": ">=20.9.0"
   },
   "scripts": {
-    "dev": "bun next dev",
-    "build": "bun next build",
+    "dev": "bun next dev --turbo",
+    "build": "bun next build --turbo",
     "start": "bun next start",
     "lint": "bun eslint",
     "db:generate": "bun drizzle-kit generate",
