@@ -30,6 +30,18 @@ export default async function Home() {
 
   return (
     <main className="mx-auto flex min-h-[calc(100vh-6rem)] max-w-5xl flex-col items-center justify-center gap-16 px-6 py-24 text-center">
+
+      <section className="w-full space-y-4">
+
+        <div style={{ position: "relative", paddingBottom: "56.25%", height: "0" }}>
+          <iframe
+            src="https://www.loom.com/embed/7329cb8363e54d58a543d71458b13dfc"
+            allowFullScreen={true}
+            style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%" }}
+          />
+        </div>
+      </section>
+
       <section className="space-y-6">
         <p className="text-sm font-semibold uppercase tracking-[0.35em] text-indigo-500">
           3 × 3 Goals
