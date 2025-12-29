@@ -236,7 +236,7 @@ export function GoalCard({ goal, parentOptions }: GoalCardProps) {
         </div>
       </header>
 
-      <MarkdownToggle content={goal.notes} />
+      <MarkdownToggle content={goal.notes} isEditing={isEditing} />
 
       {isEditing ? (
         <form
