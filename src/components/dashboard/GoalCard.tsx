@@ -3,7 +3,7 @@
 import { useActionState, useEffect, useRef, useState } from "react";
 import clsx from "clsx";
 
-import { MarkdownToggle } from "@/components/markdown/MarkdownToggle";
+import { RenderMarkdown } from "@/components/markdown/RenderMarkdown";
 import {
   deleteGoalAction,
   moveGoalTierAction,
@@ -236,7 +236,7 @@ export function GoalCard({ goal, parentOptions }: GoalCardProps) {
         </div>
       </header>
 
-      <MarkdownToggle content={goal.notes} isEditing={isEditing} />
+      <RenderMarkdown content={goal.notes} />
 
       {isEditing ? (
         <form
