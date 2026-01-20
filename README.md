@@ -1,3 +1,13 @@
+# 3x3 Builder
+
+This is a todo app that lets you set different timescales for the actions you define with in it.
+
+At each level, yearly, quarterly, monthly, etc. you can define 3 primary goals and at the lower levels some secondary ones. The idea is you can make sure that the actions you have defined each work with a higher level one.
+
+The main site is [here](https://3x3builder.com), and there is a short video explaining its use in more detail.
+
+## Development notes:
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
@@ -5,12 +15,6 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 First, run the development server:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
 bun dev
 ```
 
@@ -28,5 +32,3 @@ To learn more about Next.js, take a look at the following resources:
 - [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-There is a running version of this [here](https://3x3builder.com)
