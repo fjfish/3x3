@@ -19,6 +19,7 @@
   "dependencies": {
     "@clerk/nextjs": "^6.35.0",
     "@clerk/themes": "^2.4.35",
+    "@uiw/react-md-editor": "^4.0.11",
     "clsx": "^2.1.1",
     "drizzle-orm": "^0.44.7",
     "next": "16.0.7",

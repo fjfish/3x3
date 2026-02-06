@@ -6,6 +6,7 @@ import {
   createGoalAction,
   type GoalActionState,
 } from "@/server/actions/goals";
+import { MarkdownEditor } from "@/components/markdown/MarkdownEditor";
 
 export type ParentOption = {
   id: string;
@@ -99,17 +100,14 @@ export function CreateGoalForm({
         </div>
       ) : null}
 
-      <div className="space-y-2">
-        <label className="text-sm font-medium text-slate-700">Notes</label>
-        <textarea
-          name="notes"
-          value={notes}
-          onChange={(e) => setNotes(e.target.value)}
-          rows={4}
-          placeholder="Use Markdown to add context, links, or checklists."
-          className="w-full rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm text-slate-900 outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
-        />
-      </div>
+      <MarkdownEditor
+        label="Notes"
+        name="notes"
+        value={notes}
+        onChange={setNotes}
+        rows={4}
+        placeholder="Use Markdown to add context, links, or checklists."
+      />
 
       {state.error ? (
         <p className="text-sm text-rose-600">{state.error}</p>
@@ -124,4 +122,3 @@ export function CreateGoalForm({
     </form>
   );
 }
-

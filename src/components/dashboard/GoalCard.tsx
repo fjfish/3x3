@@ -4,6 +4,7 @@ import { useActionState, useEffect, useRef, useState } from "react";
 import clsx from "clsx";
 
 import { RenderMarkdown } from "@/components/markdown/RenderMarkdown";
+import { MarkdownEditor } from "@/components/markdown/MarkdownEditor";
 import {
   deleteGoalAction,
   moveGoalTierAction,
@@ -34,6 +35,7 @@ const initialState: GoalActionState = {};
 export function GoalCard({ goal, parentOptions }: GoalCardProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [isActionMenuOpen, setIsActionMenuOpen] = useState(false);
+  const [notes, setNotes] = useState(goal.notes ?? "");
   const actionMenuRef = useRef<HTMLDivElement>(null);
   const updateAction = updateGoalAction.bind(null, goal.id);
   const [updateState, updateFormAction] = useActionState(updateAction, initialState);
@@ -64,6 +66,12 @@ export function GoalCard({ goal, parentOptions }: GoalCardProps) {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isActionMenuOpen]);
+
+  useEffect(() => {
+    if (isEditing) {
+      setNotes(goal.notes ?? "");
+    }
+  }, [isEditing, goal.notes]);
 
   const formatDate = (date: Date) => {
     return new Intl.DateTimeFormat("en-US", {
@@ -288,17 +296,14 @@ export function GoalCard({ goal, parentOptions }: GoalCardProps) {
             </div>
           ) : null}
 
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-700">
-              Notes (Markdown)
-            </label>
-            <textarea
-              name="notes"
-              rows={4}
-              defaultValue={goal.notes ?? ""}
-              className="w-full rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm text-slate-900 outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
-            />
-          </div>
+          <MarkdownEditor
+            label="Notes (Markdown)"
+            name="notes"
+            value={notes}
+            onChange={setNotes}
+            rows={4}
+            placeholder="Use Markdown to add context, links, or checklists."
+          />
 
           <div className="min-h-[1.5rem]">
             {updateState.error ? (
@@ -326,4 +331,3 @@ export function GoalCard({ goal, parentOptions }: GoalCardProps) {
     </article>
   );
 }
-
